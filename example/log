@@ -1,0 +1,15 @@
+parameter file: par.convertf
+DIR: data/
+SSS: family
+S1: family_packed
+indivname: data//family.ind
+snpname: data//family.snp
+genotypename: data//family.geno
+outputformat: packedancestrymap
+genotypeoutname: data//family_packed.geno
+snpoutname: data//family_packed.snp
+indivoutname: data//family_packed.ind
+numvalidind:     54  maxmiss: 54001
+packedancestrymap output
+##end of convertf run
+End successfully

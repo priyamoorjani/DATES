@@ -1,0 +1,12 @@
+DIR: data/
+SSS: family
+S1: family_packed
+indivname:    DIR/SSS.ind
+snpname:      DIR/SSS.snp  
+genotypename:  DIR/SSS.geno
+outputformat: packedancestrymap
+genotypeoutname: DIR/S1.geno
+snpoutname:      DIR/S1.snp  
+indivoutname:    DIR/S1.ind   
+#newsnpname:	S1.snp
+#badsnpname: badsnplist

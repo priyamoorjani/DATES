@@ -1,0 +1,60 @@
+
+## DATES.  Version 750
+
+parameter file: par.dates
+DIR: ./data
+indivname: ./data/family_packed.ind	
+snpname: ./data/family_packed.snp
+genotypename: ./data/family_packed.geno
+admixlist: admix	
+binsize: 0.001
+maxdis: 1.0
+seed: 77
+runmode: 1
+chithresh: 0.0
+mincount: 1
+zdipcorrmode: YES
+qbin: 10
+runfit: YES
+afffit: YES
+lovalfit: 0.45
+
+seed: 77
+snppath: /n/groups/reich/pm82/dev/dates_v750/example/data/family_packed.snp
+genotypename:  ./data/family_packed.geno
+packed geno read OK
+end of inpack
+valid snps: 378678
+copy param code: 0
+calling dowork:  French Yoruba Simulation
+chithresh:     0.000
+output tables: Simulation.out
+mesh used :: qbin: 10  numqbins: 1404425
+number admixed: 1 numeg: 2
+group 0 French samplesize:   28
+group 1 Yoruba samplesize:   21
+numsnps: 378678  numindivs: 54
+coeff:   0              NA00000     0.251
+sample:              NA00000 completed.  Total CPU since start:     2.790
+calling fit!...
+dates_jackknife -p par.dates -l     0.450 -z Simulation -r 77 -m /n/groups/reich/pm82/dev/dates_v750/example/data/family_packed.snp -a >Simulation:log
+copy param code: 0
+calling dowork:  French Yoruba Simulation.1
+chithresh:     0.000
+output tables: Simulation.1.out
+mesh used :: qbin: 10  numqbins: 1404425
+number admixed: 4 numeg: 2
+group 0 French samplesize:   28
+group 1 Yoruba samplesize:   21
+numsnps: 378678  numindivs: 54
+coeff:   0              NA00001     0.234
+sample:              NA00001 completed.  Total CPU since start:     4.080
+coeff:   1              NA00002     0.246
+sample:              NA00002 completed.  Total CPU since start:     4.440
+coeff:   2              NA00003     0.243
+sample:              NA00003 completed.  Total CPU since start:     4.770
+coeff:   3              NA00004     0.235
+sample:              NA00004 completed.  Total CPU since start:     5.100
+calling fit!...
+dates_jackknife -p par.dates -l     0.450 -z Simulation.1 -r 77 -m /n/groups/reich/pm82/dev/dates_v750/example/data/family_packed.snp -a >Simulation.1:log
+##end of dates:        5.160 seconds cpu      287.220 Mbytes in use

@@ -1,0 +1,16 @@
+DIR: ./data
+indivname: DIR/family_packed.ind	
+snpname: DIR/family_packed.snp
+genotypename:	DIR/family_packed.geno
+admixlist: admix	
+binsize:	0.001
+maxdis:		1.0
+seed:		77
+runmode:	1
+chithresh:	0.0
+mincount:	1
+zdipcorrmode:	YES
+qbin:		10
+runfit:  YES 
+afffit:  YES 
+lovalfit:  0.45 

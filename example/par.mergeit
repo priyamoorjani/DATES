@@ -1,0 +1,10 @@
+ind1:   Simulation.ind
+snp1:   Simulation.snp
+geno1:  Simulation.geno
+ind2:   French_Yoruba.ind
+snp2:   French_Yoruba.snp
+geno2:   French_Yoruba.geno
+indoutfilename:   family_packed.ind
+snpoutfilename:   family_packed.snp
+genooutfilename:  family_packedgeno
+outputformat:  packedancestrymap 

@@ -1,0 +1,93 @@
+#!/usr/bin/perl -w
+use Getopt::Std ;
+
+getopts('p:c:l:z:r:m:h:a',\%opts) ;  
+
+if (defined $opts{"p"}) {
+ $parname = $opts{"p"} ;
+ }
+ else {
+  die "p parameter compulsory\n" ;
+ }
+## parname shoudl be parameter file for rolloff/rolloffp  
+
+$col = 3 ; 
+$temp = `grabpars -p $parname -x "timeoffsetname:" ` ;
+$col = 3 if ($temp =~ /NOTFOUND/) ;
+
+if (defined $opts{"c"}) {
+ $col = $opts{"c"} ;
+}
+
+if (defined $opts{"z"}) {
+ $admixpop = $opts{"z"} ;
+}
+
+#PM: changed
+$aff = "" ;
+if (defined $opts{"a"}) {
+ $aff = " -a " ;     
+  print "#affine mode: YES\n";
+}
+
+$loval = 0.45  ; 
+if (defined $opts{"l"}) {
+ $loval = $opts{"l"} ;
+}
+
+#PM: changed par to -r to be consistent withe expfit call
+if (defined $opts{"r"}) {
+ $seed = $opts{"r"} ;
+}
+$seed = int(rand(1000*1000*1000)) unless (defined $seed) ; 
+
+#PM: add
+$hival = 20;
+if (defined $opts{"h"}) {
+ $hival = $opts{"h"} ;
+} 
+
+$snpname = `grabpars -p $parname -x "snpname:" ` ;
+if (defined $opts{"m"}) {
+ $snpname = $opts{"m"} ;
+}
+
+$bin = `grabpars -p $parname -x "binsize:" ` ;
+$bin = ".001" if ($bin =~ /NOTFOUND/) ;
+
+$numchrom = `grabpars -p $parname -x "numchrom:" ` ;
+$numchrom = 22  if ($numchrom =~ /NOTFOUND/) ;
+
+$file = `grabpars -p $parname -x "output:" ` ;
+if ($file =~ /NOTFOUND/) { 
+ $file = `grabpars -p $parname -x "admixpop:" ` ; 
+ $file = $admixpop if (defined $admixpop) ; 
+ chomp $file ; 
+ $file .= ".out" ;  
+}   
+
+chomp ($snpname, $file, $bin) ;
+
+#PM: change error message
+die "(jackknife) :: map file not found!\n" unless (-e $snpname) ; 
+die "bad snpname\n" if ($snpname =~ /NOTFOUND/) ;
+die "bad output\n" if ($file =~ /NOTFOUND/) ;
+
+$oldfile = $file ;
+$file =~ s/\.out$// ; 
+
+if ($file eq $oldfile) { 
+die "output should be POP.out :: $file\n" ;
+}
+
+# PM: change
+#$cmd = "wtjack:roll -i $file -m $snpname -n $numchrom -c $col -s $seed $aff"  ;
+$cmd = "dates_wtjack -i $file -m $snpname -s $bin -n $numchrom -l $loval -c $col -r $seed $aff"  ;
+print "$cmd\n" ;
+system "$cmd" ;
+
+#PM: add
+# plot dates output
+$cmd = "dates_plot -i $file -s $bin -l $loval -h $hival -r $seed $aff -c $col";
+print "$cmd\n" ;
+system "$cmd" ;

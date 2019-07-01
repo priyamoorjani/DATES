@@ -1,0 +1,173 @@
+#!/usr/bin/perl
+##use Math::Random;
+use Getopt::Std ;
+
+## mildly modified from original script by Priya Moorjani
+
+getopts('i:l:m:n:r:c:s:a',\%opts) ;  ## x flag kill comments
+
+if (defined $opts{"i"}) {
+ $file = $opts{"i"} ;
+ }
+ else {
+  die "i parameter compulsory - Enter list of pops\n" ;
+  }
+
+  $loval = 0.45 ; 
+  if (defined $opts{"l"}) {
+   $loval = $opts{"l"} ;
+  }
+
+  if (defined $opts{"m"}) {
+   $map = $opts{"m"} ;
+  }
+   else {
+    die "m parameter compulsory- Enter map file name\n" ;
+   }
+
+my $aff= 1;
+  if (defined $opts{"a"}) {
+   $aff = " -a " ;  
+   print "## affine mode\n" ;
+  }
+  else { 
+   $aff = "" ;  
+   print "## affine mode not used\n" ;
+  }
+
+$numchrom = 22 ;
+if (defined $opts{"n"}) {
+ $numchrom = $opts{"n"} ;
+ }
+
+$seed = 77 ;
+if (defined $opts{"r"}) {
+ $seed = $opts{"r"} ;
+ }
+
+
+##print "wtjack:roll  file:: $file\n" ;
+my $col = 3; # column for correlation coefficient - change to 3 on 3.24.19
+if (defined $opts{"c"}) {
+     $col = $opts{"c"} ;
+}
+
+my $bin = 0.001;
+if (defined $opts{"s"}) {
+     $bin = $opts{"s"} ;
+}
+my $nlag = 0 ;
+
+$tt = $col;
+open (IN, "$map") or die "No mapfile $map\n";
+@count = ();
+$count_total =0;
+
+#count the number of SNPs on each chromosome. This is used as weights for the weighted jackknife calculation
+while (my $line = <IN>)
+{
+	chomp $line; 
+	@data =split(" ",$line);
+	for (my $i = 1; $i <= $numchrom; $i++)
+	{
+		if ($data[1] == $i)
+		{
+			$count[$i]++;
+			$count_total++;
+		}
+	}
+}
+for (my $i = 1; $i <= $numchrom; $i++) {
+ printf "chrom: %d  count: %d;\t", $i, $count[$i] ;
+} 
+
+
+#open list of pops
+if (-r $file) { 
+open (FILE, $file) or die "cannot open $file\n";
+@file = <FILE>;
+}
+else {
+@file = ($file) ;
+}
+
+# For each pop, estimate the mean of generations since admixture
+foreach my $pop (@file){
+	chomp $pop; $out = $pop.".jin"; #input for weighted jackknife estimator
+	open (OUT, ">$out") or die "Fail to open outfile\n";
+	print "\n\nPop: $pop\n";
+	print "Mean square error of fit\n";
+	foreach $chr (1..$numchrom)
+	{
+		$weight = 0;		
+  		$log = "expfit_$pop.log";
+		$in = "$pop.out:".$chr;
+#	$in = $pop."_nochr_".$chr.".out";
+
+ 		$fit = "$pop.fit";
+                unlink $log ;  
+
+                $sran = $seed + $chr ; 
+                $cmd =   "dates_expfit -i $in -n 1 -o $fit -l $loval -c $tt -r $sran $aff -s $bin >>$log" ; 
+                print "$cmd\n" ;
+                system  "dates_expfit -i $in -n 1 -o $fit -l $loval  -c $tt -r $sran $aff -s $bin >>$log"  ; 
+
+		$weight = $count_total - $count[$chr];			
+		open(IN,$log) || die("Fail to open $log\n");
+        	while(my $line = <IN>)
+       		{
+        		unless($line =~ /mean/) { next; }
+                	chomp($line);
+                	@array = split(/[\t ]+/,$line);
+                	$this = $array[2];
+			printf  OUT "%3d  %12.6f  %12.6f\n",   $chr,    $count[$chr],   $this;
+		}
+		print "Chr $chr:  ";
+		printf  "%3d  %12.6f  %12.6f\n",   $chr,    $count[$chr],   $this;
+		system "calc_error $fit" ;
+		close(IN);
+	}
+##      unlink ($log) ;
+	
+	# calculate mean generations since admixture for entire dataset
+ 	$flog = "expfit_$pop.flog";
+	$fin = $pop.".out";
+	$fout = "$pop.fit";
+	$cmd =   "dates_expfit -i $fin -n 1 -o $fout -l $loval $aff -r $seed -c $tt -s $bin >$flog" if ($nlog==0);
+        print "Overall: $cmd\n" ;
+	system  "dates_expfit -i $fin -n 1 -o $fout -l $loval  $aff  -r $seed -c $tt -s $bin >$flog" if ($nlog==0);
+        open(IN,$flog) || die("Fail to open $flog");
+        while(my $line = <IN>)
+        {
+        	unless($line =~ /mean/) { next; }
+                chomp($line);
+                @array = split(/[\t ]+/,$line);
+                $mean = $array[2];
+                print "$mean\n";
+        } 
+##	system "rm $flog $fout"; 
+	$win = $pop.".jin";
+	$wout = $pop.".jout";
+	print "\nJackknife summary:\n";
+        system "cat $win" ;
+	# PM change simjack2 call to dowtjack
+	#system "simpjack2 -i $win -m $mean >  $wout";
+## simpjack2: t1    27.295479    27.298000     2.056665     13.272
+#        $jmean = $Z[3] ;  
+#        $mean  = $Z[4] ;  
+#        $serr  = $Z[5] ; 
+#        printf "mean:  %9.3f", $mean ;
+
+	system "dowtjack -i $win -m $mean -o $wout";
+        $ans = `tail $wout` ;  
+        @Z = split " ", $ans ; 
+	$jmean = $Z[0];
+	$serr = $Z[1]; 
+	
+        printf " jmean:  %9.3f", $jmean ;
+        printf " std. err:  %9.3f", $serr ;
+        printf " jmean (years):  %9.3f", $jmean*29 ;
+        printf " std. err(years):  %9.3f", $serr*29 ;
+        
+        print "\n" ;
+}

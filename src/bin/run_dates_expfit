@@ -1,0 +1,71 @@
+#!/usr/bin/perl -w
+use Getopt::Std ;
+
+getopts('p:c:l:s:z:a',\%opts) ;  
+
+if (defined $opts{"p"}) {
+ $parname = $opts{"p"} ;
+ }
+
+ else {
+  die "p parameter compulsory\n" ;
+ }
+## parname should be parameter file for rolloff/rolloffp  
+
+$seed = 0 ; 
+if (defined $opts{"r"}) { 
+ $seed = $opts{"r"} ;  
+}
+
+$temp = `grabpars -p $parname -x "timeoffsetname:" ` ;
+$col = 3 if ($temp =~ /NOTFOUND/) ; 
+if (defined $opts{"c"}) {
+ $col = $opts{"c"} ;
+}
+
+if (defined $opts{"z"}) {
+ $admixpop = $opts{"z"} ;
+}
+
+ 
+$aff = "" ;
+if (defined $opts{"a"}) {
+ $aff = " -a " ;     
+}
+ 
+$loval = 0.45  ; 
+if (defined $opts{"l"}) {
+ $loval = $opts{"l"} ;
+}
+
+$snpname = `grabpars -p $parname -x "snpname:" ` ;
+$bin = `grabpars -p $parname -x "binsize:" ` ;
+$bin = ".001" if ($bin =~ /NOTFOUND/) ;
+
+$numchrom = `grabpars -p $parname -x "numchrom:" ` ;
+$numchrom = 22  if ($numchrom =~ /NOTFOUND/) ;
+
+$file = `grabpars -p $parname -x "output:" ` ;
+if ($file =~ /NOTFOUND/) { 
+ $file = `grabpars -p $parname -x "admixpop:" ` ; 
+ $file = $admixpop if (defined $admixpop) ; 
+ chomp $file ; 
+ $file .= ".out" ;  
+}   
+
+chomp ($snpname, $file, $bin) ;
+die "bad snpname\n" if ($snpname =~ /NOTFOUND/) ;
+die "bad output\n" if ($file =~ /NOTFOUND/) ;
+
+$pop = $file ;
+$pop =~ s/\.out$// ; 
+
+if ($file eq $pop) { 
+die "output should be POP.out :: $file\n" ;
+}
+
+$out = "$pop:expfit.out" ;
+$cmd = "dates_expfit -i $file -o $out -n 1 -c $col -l $loval -r $seed $aff -s $bin"  ;
+
+print "$cmd\n" ;
+system "$cmd" ;

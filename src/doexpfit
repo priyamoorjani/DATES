@@ -1,0 +1,4 @@
+#!/bin/sh 
+
+~/o2bin/expfit -i Uygur.out -l 0.50 -h 40.0 -s 0.001 -n 1 -c 3 -o Uygur.fit -a   > Uygur.log
+~/o2bin/expfit -i Uygur.out -l 0.50 -h 40.0 -s 0.001 -n 2 -c 3 -o Uygur2.fit -a   > Uygur2.log

@@ -1,0 +1,55 @@
+esttime2.c diffed
+gauss.c diffed
+gcd.c diffed
+734,735c734
+<   if (lo==hi)  return lo ;
+<   if (lo>hi) fatalx("(rejnorm) bad bounds\n") ;
+---
+>   if ((lo==0.0) && (hi==0.0)) return 0 ;
+742c741,749
+<     if ((lo<=y) && (y<=hi)) return y ;  
+---
+>     if (lo >= 0)
+>       y = fabs (y);
+>     if (hi <= 0)
+>       y = -fabs (y);
+>     if (y < lo)
+>       continue;
+>     if (y > hi)
+>       continue;
+>     return y;
+gds.c diffed
+getpars.c diffed
+kimf.c diffed
+linsolve.c diffed
+362c362
+<   int ret, k ; 
+---
+>   int ret ; 
+364,370d363
+< /** 
+<  quick check on diagonal
+< */  
+<   for (k=0; k<n; ++k) { 
+<    if (a[k*n+k] <= 0.0) return NO ;
+<   }
+< 
+linsubs.c diffed
+old.c diffed
+sortit.c diffed
+statsubs.c diffed
+strsubs.c diffed
+vsubs.c diffed
+xsearch.c diffed
+getpars.h diffed
+linsubs.h diffed
+mptable.h diffed
+nicklib.h diffed
+oldtwtable.h diffed
+ranmath.h diffed
+sortit.h diffed
+statsubs.h diffed
+strsubs.h diffed
+twtable.h diffed
+vsubs.h diffed
+xsearch.h diffed

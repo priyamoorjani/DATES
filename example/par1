@@ -1,0 +1,16 @@
+         DIR:  /home/np29/broaddatax/sudandir 
+          S1:                 data1     
+   indivname:                 DIR/S1.ind
+     snpname:                 DIR/S1.snp
+genotypename:                DIR/S1.geno
+poplistname:  /n/groups/reich/kendra/DATES/DATES/ttt/popadm_pm
+admixpop:     Sudan_Early_Christian  
+binsize:      .001  
+maxdis:       .20 
+seed:         77
+runmode:      1
+mincount:     4
+minparentcount:   0
+jackknife:    YES   
+output:	KULB:DinkaAnatN_NICKversion_Retest.out
+qbin:         10  

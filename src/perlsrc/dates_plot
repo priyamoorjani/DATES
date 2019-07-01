@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+use Getopt::Std;
+getopts('i:c:l:h:s:r:a',\%opts) ;
+
+#filename
+if (defined $opts{"i"}) {
+ 	$pop = $opts{"i"} ;
+}
+else {
+     	die "i: file name required\n" ;
+}
+
+# output col - update col=3, 3.24.19
+my $col = 3; 
+if (defined $opts{"c"}) {
+	$col = $opts{"c"} ;
+}       
+
+# affine
+my $aff = "" ;
+if (defined $opts{"a"}) {
+	$aff = " -a " ;
+	print "#affine mode: YES\n";
+}
+
+# low value (in cM)
+my $loval = 0.45;
+if (defined $opts{"l"}) {
+	$loval = $opts{"l"} ;
+}
+
+# high value (in cM)
+my $hival = 20;
+if (defined $opts{"h"}) {
+	$hival = $opts{"h"} ;
+}
+
+# bin/ step size in M
+my $bin = 0.001;
+if (defined $opts{"s"}) {
+	$bin = $opts{"s"} ;
+}
+
+# random seed 
+my $seed = 77;
+if (defined $opts{"r"}) {
+        $seed = $opts{"r"} ;
+}
+
+chomp $pop; 
+my $log = "${pop}_expfit.log";
+my $in = "${pop}.out";
+my $out = "${pop}.fit";
+
+# run fit
+my $cmd = "dates_expfit -i $in -n 1 -o $out -l $loval -s $bin $aff -c $col -r $seed >$log"; 
+print $cmd."\n"; 
+system  "$cmd";
+my $mean = 0;
+open (IN, $log) or die "cof logfile\n";
+while(my $line = <IN>)
+{
+	unless($line =~ /mean/) { next; }
+        chomp($line);
+        @array = split(/\s+/,$line);
+        $mean = $array[2];
+}
+close IN;
+
+$parpop = $pop.".xtxt";
+open (OUT, ">$parpop") or die "COF\n";
+print OUT "set terminal postscript color\n";
+print OUT "set title  \"DATES: $pop\"\n";
+print OUT "set key top right\n";
+print OUT "set xlabel  \"Genetic Distance (cM)\"\n";
+print OUT "set ylabel  \"Weighted Covariance\"\n";
+print OUT "set xrange [0.5:20]\n";
+print OUT "plot \"$out\" using 1:2  title \"data\", \"$out\" using 1:3 title \"fit\" with lines\n";
+close OUT;
+
+system "gnuplot $parpop > $pop.ps" ;
+system "ps2pdf $pop.ps $pop.pdf" ; 
+

@@ -1,0 +1,5 @@
+mv expfit dates_expfit
+mv jackknife2 dates_jackknife
+mv runexpfit2 run_dates_expfit
+mv wtjack:dates dates_wtjack
+mv plot_dates dates_plot
