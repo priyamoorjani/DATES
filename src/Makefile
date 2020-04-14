@@ -27,7 +27,7 @@ $(NLIB):
 nicklib: $(NLIB) 
 	ln $(NLIB) nicklib
 
-all:   dates_expfit dates  simpjack2 dowtjack 
+all:   dates_expfit dates  simpjack2 dowtjack grabpars
 dates_expfit:    nicklib dates_expfit.o   regsubs.o  fitexp.o   gslfit.o
 dates: $(NLIB) dates.o qpsubs.o mcio.o ldsubs.o admutils.o egsubs.o regsubs.o fftsubs.o
 dates: $(NLIB) dates.o qpsubs.o mcio.o ldsubs.o admutils.o egsubs.o regsubs.o fftsubs.o
@@ -40,7 +40,7 @@ clean:
 	rm -f  *.o  nicksrc/*.o nicklib
 
 clobber:  clean
-	rm -f  dates_expfit dates simpjack2 dowtjack nicksrc/libnick.a bin/*
+	rm -f  dates_expfit dates simpjack2 dowtjack grabpars nicksrc/libnick.a bin/*
 
 install: all
 	cp dates_expfit dates grabpars simpjack2 dowtjack perlsrc/*  ./bin 
