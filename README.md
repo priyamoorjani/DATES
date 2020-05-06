@@ -38,7 +38,7 @@ $parfile: Name of parameter file.  <br />
 genotypename: input genotype filename   # in eigenstrat format
 snpname:    input snp filename          # in eigenstrat format
 indivname:  input indiv filename        # in eigenstrat format
-admixlist:  filename                    # This file contains the source and admixed populations to use for the analysis. Each line has the format: <source1> <source2> <source3> <testpopulation> <output_directory>, where source1 and source2 are the reference populations for the ancestral populations, testpop is the name of the admixed population and the output_directory is the name of the output directory.Output files are of the format output_directory/testpopulation.out
+admixlist:  filename                    # This file contains the source and admixed populations to use for the analysis. Each line has the format: <source1> <source2> <testpopulation> <output_directory>, where source1 and source2 are the reference populations for the ancestral populations, testpop is the name of the admixed population and the output_directory is the name of the output directory.Output files are of the format output_directory/testpopulation.out
 binsize:    number                      # in Morgans, range is from 0-1. Optimal binsize of 0.001 is recommended.
 maxdis:     number                      # in Morgans, range is 0-1. For quicker runs, use max_distance < 1.0. However, for recent admixture,   ensure that max_distance is greater than the expected admixture LD blocks.
 seed:       number                      # Random seed to ensure reproducibility of runs. 
@@ -47,9 +47,6 @@ qbin:       number                      # discretization parameter on mesh size 
 runfit:  YES/NO                         # run exponential fit using least squares on the output to infer the date of admixture?
 afffit:    YES/NO                       # use affine for the fit? 
 lovalfit:  0.45                         # in centiMorgans, starting genetic distance.
-whichadm: 2                             # Parameter turns on two-pulse mode of admixture. This parameter should be set as 1 or 2, where 1 is the younger pulse and 2 is for older pulse. If the parameter is set to 1, the method dates the younger pulse of admixture with <source1> and <sorce2>. And when it is set to 2, method will date the older pulse between <source2> and <source3>.
-if parameter- Whichadm is 
-samecoeffs: NO                          # if your target has same coefficients, then you can specify yes
 ```
 
 ##### Optional paramaters
