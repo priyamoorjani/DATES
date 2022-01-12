@@ -18,6 +18,8 @@ override LDFLAGS += -I<PATH_TO_GSL_LIB> -I<PATH_TO_OPENBLAS_LIB> -I<PATH_FFTW_LI
  Once the ``Makefile`` is updated, simply run ``make`` and then add the executables in the ``bin`` directory to your PATH. 
 
 ```
+make clean
+make clobber
 make install
 export PATH=$PATH:<PATH_TO_bin_directory>
 ```
